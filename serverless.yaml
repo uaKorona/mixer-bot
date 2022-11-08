@@ -1,0 +1,34 @@
+{
+  service: "mixer-bot",
+  frameworkVersion: "3",
+
+  package: {
+    excludeDevDependencies: true,
+    patterns: ["assets/*"]
+  },
+
+  provider: {
+    name: "aws",
+    runtime: "nodejs16.x",
+    region: "eu-west-1"
+  },
+
+  plugins: [
+    "serverless-plugin-typescript"
+  ],
+
+  functions: {
+    mixerBot: {
+      name: "mixer-bot",
+      handler: "handler.mixerBot",
+      events: [
+        {
+          httpApi: {
+            path: "/telegraf",
+            method: "post",
+          },
+        },
+      ],
+    },
+  },
+}
