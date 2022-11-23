@@ -1,5 +1,4 @@
-import {MESSAGES} from "../messeges.js";
-import {Context, Markup} from "telegraf";
+import {Context} from "telegraf";
 import {Update} from "typegram";
 import {BotHelper} from "./bot-helper.js";
 import {Buffer} from "buffer";
@@ -7,6 +6,9 @@ import {bot} from "../bot.js";
 import {MARK_POSITIONS} from "../consts/image.consts.js";
 import {Message} from "typegram/message";
 import {TypeGuardsHelper} from "./type-guards.helper.js";
+import {MyContext} from "../session/session.model.js";
+import {MAIN_BUTTONS, MAIN_KEYBOARD} from "../main/main.keyboard.js";
+import {MAIN_MESSAGES} from "../main/main.messeges.js";
 
 
 export class BotCommands {
@@ -17,16 +19,20 @@ export class BotCommands {
 
     onStart = (ctx: Context<Update>) =>
         ctx.replyWithHTML(
-            MESSAGES.startMessage(ctx?.from?.first_name ?? 'guest'),
+            MAIN_MESSAGES.startMessage(ctx?.from?.first_name ?? 'guest'),
+            MAIN_KEYBOARD
+        );
+   /* ctx.replyWithHTML(
+            MAIN_MESSAGES.startMessage(ctx?.from?.first_name ?? 'guest'),
             Markup.keyboard([
                 [MARK_POSITIONS.TOP_LEFT, MARK_POSITIONS.TOP_RIGHT],
                 [MARK_POSITIONS.BOTTOM_LEFT, MARK_POSITIONS.BOTTOM_RIGHT],
             ]).resize()
-        );
+        );*/
 
-    skipMessageFromChat = async (ctx: Context<Update>, next: () => Promise<void>) => {
+    skipMessageFromChat = async (ctx: MyContext, next: () => Promise<void>) => {
         if (this._botHelper.isMessageFromChat(ctx)) {
-            // skip running next middlewares for messages from chat
+            // skip running next middlewares for MAIN_MESSAGES from chat
             return;
         }
 
@@ -38,7 +44,7 @@ export class BotCommands {
 
         if (fileId === null) {
             console.log(ctx.message);
-            throw new Error(MESSAGES.unknownFileId());
+            throw new Error(MAIN_MESSAGES.unknownFileId());
         }
 
         const fileUrl = await bot.telegram
@@ -46,17 +52,17 @@ export class BotCommands {
             .then(url => url.toString());
 
         if (typeof fileUrl === 'undefined') {
-            return ctx.replyWithHTML(MESSAGES.unknownFileUrl());
+            return ctx.replyWithHTML(MAIN_MESSAGES.unknownFileUrl());
         }
 
-        ctx.reply(MESSAGES.proceeding());
+        ctx.reply(MAIN_MESSAGES.proceeding());
 
         const buffer = await this._botHelper.getWatermarkedImage(fileUrl) as Buffer;
 
         return ctx.replyWithPhoto({source: buffer})
     }
 
-    otherMessagesHandler = async (ctx: Context<Update>) => {
+    otherMessagesHandler = async (ctx: MyContext, next: () => Promise<void>) => {
         const {text} = ctx.message as Message.TextMessage;
 
         switch (text) {
@@ -70,12 +76,22 @@ export class BotCommands {
                     return ctx.reply(result);
                 }
 
-                return ctx.reply(MESSAGES.positioning( text))
+                return ctx.reply(MAIN_MESSAGES.positioning( text))
                     .then(() => ctx.replyWithPhoto({source: result}));
             }
 
+            case MAIN_BUTTONS.TEXT:
+                return ctx.scene.enter("MIXER_TEXT_SCENE");
+
+            case MAIN_BUTTONS.PREVIEW:
+                // @ts-ignore
+                console.log(ctx['session']);
+                return ctx.reply(ctx.context|| 'nothing');
+
             default:
-                return ctx.replyWithHTML(MESSAGES.unSupportType());
+                console.log('default handler');
+                return next()
+               // return ctx.replyWithHTML(MAIN_MESSAGES.unSupportType());
         }
     }
 }

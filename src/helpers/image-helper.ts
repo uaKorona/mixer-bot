@@ -1,7 +1,8 @@
 import Jimp from "jimp";
 import {Buffer} from "buffer";
 import {DEFAULT_RATIO, LOGO_PATH, MARK_POSITIONS, OPTIONS, ROWS, X, Y} from "../consts/image.consts.js";
-import {MESSAGES} from "../messeges.js";
+import {MAIN_MESSAGES} from "../main/main.messeges.js";
+
 
 export class ImageHelper {
 
@@ -28,11 +29,11 @@ export class ImageHelper {
 
      async getMarkedImageByPosition(position: MARK_POSITIONS): Promise<string | Buffer> {
         if (!this._jImage) {
-            return Promise.resolve(MESSAGES.fileFirst());
+            return Promise.resolve(MAIN_MESSAGES.fileFirst());
         }
 
         if (!this._jLogoResized) {
-            return Promise.resolve(MESSAGES.logoNotFound());
+            return Promise.resolve(MAIN_MESSAGES.logoNotFound());
         }
 
         const {x, y} = this._getXYbyPositions(position, this._jImage, this._jLogoResized);
