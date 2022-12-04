@@ -22,15 +22,8 @@ export class BotCommands {
             MAIN_MESSAGES.startMessage(ctx?.from?.first_name ?? 'guest'),
             MAIN_KEYBOARD
         );
-   /* ctx.replyWithHTML(
-            MAIN_MESSAGES.startMessage(ctx?.from?.first_name ?? 'guest'),
-            Markup.keyboard([
-                [MARK_POSITIONS.TOP_LEFT, MARK_POSITIONS.TOP_RIGHT],
-                [MARK_POSITIONS.BOTTOM_LEFT, MARK_POSITIONS.BOTTOM_RIGHT],
-            ]).resize()
-        );*/
 
-    skipMessageFromChat = async (ctx: MyContext, next: () => Promise<void>) => {
+    skipMessageFromChat = async (ctx: Context<Update>, next: () => Promise<void>) => {
         if (this._botHelper.isMessageFromChat(ctx)) {
             // skip running next middlewares for MAIN_MESSAGES from chat
             return;
@@ -55,7 +48,7 @@ export class BotCommands {
             return ctx.replyWithHTML(MAIN_MESSAGES.unknownFileUrl());
         }
 
-        ctx.reply(MAIN_MESSAGES.proceeding());
+        await ctx.reply(MAIN_MESSAGES.proceeding());
 
         const buffer = await this._botHelper.getWatermarkedImage(fileUrl) as Buffer;
 
@@ -84,9 +77,8 @@ export class BotCommands {
                 return ctx.scene.enter("MIXER_TEXT_SCENE");
 
             case MAIN_BUTTONS.PREVIEW:
-                // @ts-ignore
-                console.log(ctx['session']);
-                return ctx.reply(ctx.context|| 'nothing');
+                console.log(ctx.session);
+                return ctx.reply(ctx.session.text || 'nothing');
 
             default:
                 console.log('default handler');
