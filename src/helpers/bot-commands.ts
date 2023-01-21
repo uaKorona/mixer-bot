@@ -33,21 +33,29 @@ export class BotCommands {
         return next(); // running next middleware
     }
 
-    otherMessagesHandler = async (ctx: MyContext, next: () => Promise<void>) => {
-        const {text} = ctx.message as Message.TextMessage;
+    publishPost = async (ctx: MyContext, next: () => Promise<void>) => {
+        await ctx.copyMessage(this._channel_id);
+        await ctx.editMessageReplyMarkup({inline_keyboard: []});
+        await ctx.reply(MAIN_BUTTONS.PUBLISHED);
+
+        this._emptySession(ctx);
+
+        return next();
+    }
+
+    otherMessagesHandler = async (ctx: MyContext) => {
+        const {text} = ctx.message as Message.TextMessage ?? {};
 
         switch (text) {
             case MAIN_BUTTONS.MEDIA:
                 return ctx.scene.enter(SCENES_ID.MEDIA_SCENE_ID);
 
             case MAIN_BUTTONS.CANCEL:
-            case MAIN_BUTTONS.PUBLISHED:
                  this._emptySession(ctx);
                  break;
 
             case MAIN_BUTTONS.PREVIEW:
                 const extra = this._getCaption(ctx);
-                console.log(ctx.session, extra.caption_entities);
 
                 if (ctx.session.photo) {
                     return ctx.replyWithPhoto(ctx.session.photo, extra)
@@ -76,13 +84,6 @@ export class BotCommands {
         return ctx.reply(MAIN_MESSAGES.mainKeyboardDescription(), MAIN_KEYBOARD)
     }
 
-    publishPost = async (ctx: MyContext) => {
-        await ctx.copyMessage(this._channel_id);
-        await ctx.editMessageReplyMarkup({inline_keyboard: []})
-
-        return ctx.reply(MAIN_BUTTONS.PUBLISHED)
-    }
-
     private _getCaption(ctx: MyContext): { caption: string, caption_entities: MessageEntity[], reply_markup: InlineKeyboardMarkup } {
         const divider = '\n\n';
 
@@ -92,17 +93,17 @@ export class BotCommands {
         ];
 
         const secondPart = [
-            MAIN_MESSAGES.groupName(),
-            MAIN_MESSAGES.inviteEnd(),
+            MAIN_MESSAGES.sendJokeFooter(),
             divider
         ];
 
         const thirdPart = [
-            MAIN_MESSAGES.sendJokeFooter()
+            MAIN_MESSAGES.groupName(),
+            MAIN_MESSAGES.inviteEnd(),
         ];
 
-        const inviteOffset: number = this._getOffset(firstPart);
-        const jokeOffset = inviteOffset + this._getOffset(secondPart);
+        const jokeOffset: number = this._getOffset(firstPart);
+        const inviteOffset: number = jokeOffset + this._getOffset(secondPart);
 
         const caption_entities = [
             this._botHelper.getCaptionEntityInvite(inviteOffset),

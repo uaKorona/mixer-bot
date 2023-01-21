@@ -90,8 +90,7 @@ mediaScene.on("message", async (ctx, next) => {
     if (TEXT_BUTTONS.TEXT_NEXT || TEXT_BUTTONS.TEXT_CANCEL) {
         await ctx.scene.leave();
 
-        (ctx.message as Message.TextMessage).text = ''; // NOTE: empty text before returning back
-        return next();
+        return _botHelper.nextWithEmptyText(ctx, next);
     }
 
     return ctx.replyWithHTML(MEDIA_MESSAGES.unSupportType());

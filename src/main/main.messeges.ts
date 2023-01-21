@@ -1,11 +1,11 @@
 import {MAIN_BUTTONS} from "./main.keyboard.js";
 
 export const MAIN_MESSAGES = {
-    mainKeyboardDescription: () => `Пришли текст або тисни кнопку, щоб додати картинку чи відео`,
+    mainKeyboardDescription: () => `Пришли текст або тисни кнопку, щоб додати медіа 👇`,
 
     startMessage: (name: string) => [
         `Привіт, <b>${name}</b>!`,
-        `Я <b>Міксер-бот 🧜🏻‍️</b>, і я допоможу тобі надсилати жартики`,
+        `Я <b>Жартус 👨🏼‍🍳 ‍️</b>, і я допоможу тобі надсилати жартики`,
         MAIN_MESSAGES.mainKeyboardDescription(),
     ].join('\n\n'),
 

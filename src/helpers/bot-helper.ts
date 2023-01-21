@@ -66,4 +66,9 @@ export class BotHelper {
         }
     }
 
+    public nextWithEmptyText(ctx: Context<Update> ,next: () => Promise<void>): Promise<void> {
+        (ctx.message as Message.TextMessage).text = ''; // NOTE: empty text before returning
+        return next();
+    }
+
 }
