@@ -1,7 +1,8 @@
 import Jimp from "jimp";
 import {Buffer} from "buffer";
-import {DEFAULT_RATIO, LOGO_PATH, MARK_POSITIONS, OPTIONS, ROWS, X, Y} from "../consts/image.consts.js";
+import {DEFAULT_RATIO, LOGO_PATH, OPTIONS, ROWS, X, Y} from "../consts/image.consts.js";
 import {MAIN_MESSAGES} from "../main/main.messeges.js";
+import {POSITION_BUTTONS, POSITION_KEYBOARD} from "../scenes/media/media.keyboard.js";
 
 
 export class ImageHelper {
@@ -27,7 +28,7 @@ export class ImageHelper {
         return this._markImage(this._jImage, this._jLogoResized).getBufferAsync(this._jImage.getMIME())
     }
 
-     async getMarkedImageByPosition(position: MARK_POSITIONS): Promise<string | Buffer> {
+     async getMarkedImageByPosition(position: POSITION_BUTTONS): Promise<string | Buffer> {
         if (!this._jImage) {
             return Promise.resolve(MAIN_MESSAGES.fileFirst());
         }
@@ -73,18 +74,18 @@ export class ImageHelper {
         return jLogo.resize(newWidth, Jimp.AUTO)
     }
 
-    private _getXYbyPositions(position: MARK_POSITIONS, jImg: Jimp, jLogo: Jimp): { x: number, y: number } {
+    private _getXYbyPositions(position: POSITION_BUTTONS, jImg: Jimp, jLogo: Jimp): { x: number, y: number } {
         const maxLogoX = jImg.getWidth() - jLogo.getWidth();
         const maxLogoY = jImg.getHeight() - jLogo.getHeight();
 
         switch (position) {
-            case MARK_POSITIONS.TOP_RIGHT:
+            case POSITION_BUTTONS.TOP_RIGHT:
                 return {x: maxLogoX, y: Y};
 
-            case MARK_POSITIONS.BOTTOM_RIGHT:
+            case POSITION_BUTTONS.BOTTOM_RIGHT:
                 return {x: maxLogoX, y: maxLogoY};
 
-            case MARK_POSITIONS.BOTTOM_LEFT:
+            case POSITION_BUTTONS.BOTTOM_LEFT:
                 return {x: X, y: maxLogoY};
 
             default:

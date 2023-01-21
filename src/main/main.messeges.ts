@@ -1,27 +1,17 @@
+import {MAIN_BUTTONS} from "./main.keyboard.js";
+
 export const MAIN_MESSAGES = {
-    mainKeyboardDescription: () => `Пришли мені текст, картинку або відео, і я відправлю твій пост у канал`,
+    mainKeyboardDescription: () => `Пришли текст або тисни кнопку, щоб додати картинку чи відео`,
 
     startMessage: (name: string) => [
         `Привіт, <b>${name}</b>!`,
-        `Мене звуть - <b>Міксермен 💦</b>, і я допоможу тобі надіслати жартик.`,
+        `Я <b>Міксер-бот 🧜🏻‍️</b>, і я допоможу тобі надсилати жартики`,
         MAIN_MESSAGES.mainKeyboardDescription(),
     ].join('\n\n'),
 
+    previewKeyboardDescription: () => `Натисни "${MAIN_BUTTONS.PREVIEW}", щоб подивитись перед публікацією`,
+
     unSupportType: () => `Вибач, я ще не вмію обробляти такі повідомленя, я тільки вчуся 😘`,
-
-    unknownFileId: () => [
-        `Не вдалося визначити file Id`,
-        `звернись до адміна, будь ласка`
-    ].join('\n\n'),
-
-    unknownFileUrl: () => [
-        `Не вдалося визначити file url`,
-        `звернись до адміна, будь ласка`
-    ].join('\n\n'),
-
-    proceeding: () => `Обробка...`,
-
-    positioning: (position: string) => `Застосування: ${position}`,
 
     fileFirst: () => `Будь ласка, завантаж спочатку файл для обробки`,
 
@@ -30,4 +20,9 @@ export const MAIN_MESSAGES = {
         `звернись до адміна, будь ласка`
     ].join('\n\n'),
 
+    groupName: () => 'Підписатися на Міксер',
+    inviteEnd: () => ' 🥰',
+
+    sendJoke: () => `Прислати жартик`,
+    sendJokeFooter: () => MAIN_MESSAGES.sendJoke() + ' ⚡',
 }

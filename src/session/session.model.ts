@@ -7,6 +7,8 @@ interface MySceneSession extends Scenes.SceneSessionData {
 interface MySession extends Scenes.SceneSession<MySceneSession> {
     // will be available under `ctx.session.mySessionProp`
     text: string;
+    photo: string;
+    video: string;
 }
 
 // Define your own context type

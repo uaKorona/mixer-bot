@@ -6,8 +6,10 @@ import {TEXT_MAX_LENGTH} from "./text.consts.js";
 import {MAIN_KEYBOARD} from "../../main/main.keyboard.js";
 import {MAIN_MESSAGES} from "../../main/main.messeges.js";
 import {MyContext} from "../../session/session.model.js";
+import {SCENES_ID} from "../index.js";
 
-export const textScene = new Scenes.BaseScene<MyContext>('MIXER_TEXT_SCENE');
+
+export const textScene = new Scenes.BaseScene<MyContext>(SCENES_ID.TEXT_SCENE_ID);
 
 textScene.enter((ctx) => {
     return ctx.replyWithHTML(TEXT_MESSAGES.startMessage(),
